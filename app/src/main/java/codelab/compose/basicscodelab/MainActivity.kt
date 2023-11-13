@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
@@ -31,13 +33,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BasicsCodelabTheme {
-                // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    Greeting("Android")
-//                }
                 MyApp(modifier = Modifier.fillMaxSize())
             }
         }
@@ -83,18 +78,20 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun Greetings(
     modifier: Modifier = Modifier,
     // o ngoai truyen vao modifier = Modifier.fillMaxSize()
-    names: List<String> = listOf("World", "Compose")
+    //names: List<String> = listOf("World", "Compose")
+    names: List<String> = List(1000) {"$it"}
 ){
     // o ngoai truyen vao modifier = Modifier.fillMaxSize()
     // => vao day thanh modifier cua MyApp cung chinh la
     // modifier cua Column duoi day co gia tri la
     // modifier = Modifier.fillMaxSize().padding(vertical = 4.dp)
-    Column(modifier = modifier.padding(vertical = 4.dp)) {
-        for (name in names)
-        // ko truyen modifier o ngoai vao day
-        // vi o day ko su dung tham so modifier
-        // chi dung tham so name
+    //Column(modifier = modifier.padding(vertical = 4.dp)) {
+    LazyColumn(modifier = modifier.padding(vertical = 4.dp)) {
+        items(items = names) {name ->
             Greeting(name = name)
+        }
+//        for (name in names)
+//            Greeting(name = name)
     }
 }
 
@@ -103,7 +100,7 @@ fun MyApp(modifier: Modifier = Modifier) {
     var shouldShowOnboarding by remember { mutableStateOf(true) }
     Surface(modifier) {
         if (shouldShowOnboarding) {
-            OnboardingScreen()
+            OnboardingScreen(onContinueClicked = {shouldShowOnboarding = false})
         } else {
             Greetings()
         }
@@ -122,24 +119,26 @@ fun MyAppPreview(){
 @Composable
 fun GreetingsPreview() {
     BasicsCodelabTheme {
-        //Greeting("Android")
         Greetings()
     }
 }
 
 @Composable
-fun OnboardingScreen(modifier: Modifier = Modifier) {
+fun OnboardingScreen(
+    onContinueClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var shouldShowOnboarding by remember { mutableStateOf(true) }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        //modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Welcome to Basics Codelab!")
         Button(
             modifier = Modifier.padding(vertical = 24.dp),
-            onClick = { shouldShowOnboarding = false }
+            onClick = onContinueClicked
         ) {
             Text("Continue")
         }
@@ -150,6 +149,6 @@ fun OnboardingScreen(modifier: Modifier = Modifier) {
 @Composable
 fun OnboardingPreview() {
     BasicsCodelabTheme {
-        OnboardingScreen()
+        OnboardingScreen(onContinueClicked = {})
     }
 }
